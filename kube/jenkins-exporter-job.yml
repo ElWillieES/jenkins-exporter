@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jenkins-exporter
+  namespace: exporter
+spec:
+  template:
+    spec:
+      containers:
+      - name: jenkins-exporter-jenkins-users
+        image: localhost:5000/jenkins-exporter
+        command: ["python", "jenkins-exporter.py", "--configfile=jenkins_conn_elwillie.json", "--action=export_all_jenkins_users"]
+        volumeMounts:
+        - name: jenkins-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: jenkins-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: jenkins-exporter-jenkins-plugins
+        image: localhost:5000/jenkins-exporter
+        command: ["python", "jenkins-exporter.py", "--configfile=jenkins_conn_elwillie.json", "--action=export_all_jenkins_plugins"]
+        volumeMounts:
+        - name: jenkins-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: jenkins-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: jenkins-exporter-jenkins-jobs
+        image: localhost:5000/jenkins-exporter
+        command: ["python", "jenkins-exporter.py", "--configfile=jenkins_conn_elwillie.json", "--action=export_all_jenkins_jobs"]
+        volumeMounts:
+        - name: jenkins-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: jenkins-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: jenkins-exporter-jenkins-rbas-global-roles
+        image: localhost:5000/jenkins-exporter
+        command: ["python", "jenkins-exporter.py", "--configfile=jenkins_conn_elwillie.json", "--action=export_all_jenkins_rbas_global_roles"]
+        volumeMounts:
+        - name: jenkins-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: jenkins-exporter-vol
+          mountPath: /usr/src/app/export
+      - name: jenkins-exporter-jenkins-rbas-project-roles
+        image: localhost:5000/jenkins-exporter
+        command: ["python", "jenkins-exporter.py", "--configfile=jenkins_conn_elwillie.json", "--action=export_all_jenkins_rbas_project_roles"]
+        volumeMounts:
+        - name: jenkins-exporter-conf
+          mountPath: /usr/src/app/config
+        - name: jenkins-exporter-vol
+          mountPath: /usr/src/app/export
+      volumes:
+      - name: jenkins-exporter-conf
+        configMap:
+          name: jenkins-exporter-conf
+      - name: jenkins-exporter-vol
+        persistentVolumeClaim:
+          claimName: jenkins-exporter-pvc
+      restartPolicy: Never

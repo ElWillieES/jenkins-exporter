@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-exporter-conf
+  namespace: exporter
+data:
+  jenkins_conn_elwillie.json: |-
+    {
+      "jenkins-site": "elwillie",
+      "jenkins-protocol": "http",
+      "jenkins-domain-name": "jenkins.willie.lan",
+      "jenkins-user": "elwillie",
+      "jenkins-token": "1216da6c750471fa731b13510e335at51f"
+    }
