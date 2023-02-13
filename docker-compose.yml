@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - d:/code/elwillie/jenkins-exporter/app/export:/usr/src/app/export
+      - ./app/export:/usr/src/app/export
     command: >
       bash -c "python jenkins-exporter.py -c jenkins_conn_elwillie.json -a export_all_jenkins_users
       && python jenkins-exporter.py -c jenkins_conn_elwillie.json -a export_all_jenkins_plugins

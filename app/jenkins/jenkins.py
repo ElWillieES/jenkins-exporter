@@ -140,7 +140,7 @@ def export_all_jenkins_jobs_builds(jenkins_site, jenkins_protocol, jenkins_domai
                 'id': job_build['id'],
                 'number': job_build['number'],
                 'result': job_build['result'],
-                'in_progress': job_build['inProgress'],
+                # 'in_progress': job_build['inProgress'],
                 'timestamp': job_build['timestamp']
             })
             jobs_builds_count = jobs_builds_count + 1
@@ -150,8 +150,8 @@ def export_all_jenkins_jobs_builds(jenkins_site, jenkins_protocol, jenkins_domai
     export_csv(
         export_filename,
         jobs_builds_list,
-        ['date', 'name', 'display_name', 'description', 'duration', 'estimated_duration', 'full_display_name', 'id', 'number', 'result', 'in_progress', 'timestamp'],
-        ['date', 'name', 'display_name', 'description', 'duration', 'estimated_duration', 'full_display_name', 'id', 'number', 'result', 'in_progress', 'timestamp']
+        ['date', 'name', 'display_name', 'description', 'duration', 'estimated_duration', 'full_display_name', 'id', 'number', 'result', 'timestamp'],
+        ['date', 'name', 'display_name', 'description', 'duration', 'estimated_duration', 'full_display_name', 'id', 'number', 'result', 'timestamp']
     )
 
     return jobs_list
