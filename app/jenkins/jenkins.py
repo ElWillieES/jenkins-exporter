@@ -7,6 +7,7 @@ from requests.auth import HTTPBasicAuth
 def export_all_jenkins_users(jenkins_site, jenkins_protocol, jenkins_domain_name, jenkins_user, jenkins_token, export_filename):
     users_list = []
     users_count = 0
+    fake_user = 1
 
     print('{} - INFO - Reading Jenkins users from Jenkins API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), jenkins_site))
     users_response = requests.get(
@@ -24,16 +25,20 @@ def export_all_jenkins_users(jenkins_site, jenkins_protocol, jenkins_domain_name
             '{}://{}/user/{}/api/json?pretty=true'.format(jenkins_protocol, jenkins_domain_name, user_name),
             auth=HTTPBasicAuth(jenkins_user, jenkins_token)
         ).json()
+        fake_user = 1
         for user_details in user_response["property"]:
             if user_details['_class'] == "hudson.tasks.Mailer$UserProperty":
                 user_email = user_details['address']
+            if user_details['_class'] == "hudson.security.HudsonPrivateSecurityRealm$Details":
+                fake_user = 0
 
         users_list.append({
             'date': datetime.datetime.now().strftime("%Y%m%d"),
             'user_name': user_name,
             'user_email': user_email,
             'userAbsoluteUrl': user_absolute_url,
-            'userFullName': user['user']['fullName']
+            'userFullName': user['user']['fullName'],
+            'fake_user': fake_user
         })
         users_count = users_count + 1
 
@@ -42,8 +47,8 @@ def export_all_jenkins_users(jenkins_site, jenkins_protocol, jenkins_domain_name
     export_csv(
         export_filename,
         users_list,
-        ['date', 'user_name', 'user_email', 'user_absolute_url', 'user_full_name'],
-        ['date', 'user_name', 'user_email', 'userAbsoluteUrl', 'userFullName']
+        ['date', 'user_name', 'user_email', 'user_absolute_url', 'user_full_name', 'fake_user'],
+        ['date', 'user_name', 'user_email', 'userAbsoluteUrl', 'userFullName', 'fake_user']
     )
 
     return users_list
