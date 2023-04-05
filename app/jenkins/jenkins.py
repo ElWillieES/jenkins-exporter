@@ -42,7 +42,7 @@ def export_all_jenkins_users(jenkins_site, jenkins_protocol, jenkins_domain_name
         })
         users_count = users_count + 1
 
-    print('{} - INFO - Total: {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(users_count)))
+    print('{} - INFO - Total: {} users'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(users_count)))
 
     export_csv(
         export_filename,
@@ -76,7 +76,7 @@ def export_all_jenkins_plugins(jenkins_site, jenkins_protocol, jenkins_domain_na
         })
         plugins_count = plugins_count + 1
 
-    print('{} - INFO - Total: {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(plugins_count)))
+    print('{} - INFO - Total: {} plugins'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(plugins_count)))
 
     export_csv(
         export_filename,
@@ -108,7 +108,7 @@ def export_all_jenkins_jobs(jenkins_site, jenkins_protocol, jenkins_domain_name,
         })
         jobs_count = jobs_count + 1
 
-    print('{} - INFO - Total: {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(jobs_count)))
+    print('{} - INFO - Total: {} jobs'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(jobs_count)))
 
     export_csv(
         export_filename,
