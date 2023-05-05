@@ -59,20 +59,20 @@ def export_all_jenkins_plugins(jenkins_site, jenkins_protocol, jenkins_domain_na
     plugins_count = 0
 
     print('{} - INFO - Reading Jenkins plugins from Jenkins API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), jenkins_site))
-    plugins_response = requests.get(
+    http_response = requests.get(
         '{}://{}/pluginManager/api/json?depth=1&pretty=true'.format(jenkins_protocol, jenkins_domain_name),
         auth=HTTPBasicAuth(jenkins_user, jenkins_token)
-    ).json()
+    )
 
-    for plugin in plugins_response["plugins"]:
+    for http_response_item in http_response.json()['plugins']:
 
         plugins_list.append({
             'date': datetime.datetime.now().strftime("%Y%m%d"),
-            'short_name': plugin['shortName'],
-            'long_name': plugin['longName'],
-            'version': plugin['version'],
-            'active': plugin['active'],
-            'enabled': plugin['enabled']
+            'short_name': http_response_item.get('shortName'),
+            'long_name': http_response_item.get('longName'),
+            'version': http_response_item.get('version'),
+            'active': http_response_item.get('active'),
+            'enabled': http_response_item.get('enabled')
         })
         plugins_count = plugins_count + 1
 
@@ -93,20 +93,21 @@ def export_all_jenkins_jobs(jenkins_site, jenkins_protocol, jenkins_domain_name,
     jobs_count = 0
 
     print('{} - INFO - Reading Jenkins jobs from Jenkins API of {}'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), jenkins_site))
-    jobs_response = requests.get(
+    http_response = requests.get(
         '{}://{}/api/json?tree=jobs[*]&pretty=true'.format(jenkins_protocol, jenkins_domain_name),
         auth=HTTPBasicAuth(jenkins_user, jenkins_token)
-    ).json()
+    )
 
-    for job in jobs_response["jobs"]:
+    for http_response_item in http_response.json()["jobs"]:
 
-        jobs_list.append({
-            'date': datetime.datetime.now().strftime("%Y%m%d"),
-            'name': job['name'],
-            'display_name': job['displayName'],
-            'description': job['description']
-        })
-        jobs_count = jobs_count + 1
+        if http_response_item.get('_class') != "com.cloudbees.hudson.plugins.folder.Folder":
+            jobs_list.append({
+                'date': datetime.datetime.now().strftime("%Y%m%d"),
+                'name': http_response_item.get('name'),
+                'display_name': http_response_item.get('displayName'),
+                'description': http_response_item.get('description')
+            })
+            jobs_count = jobs_count + 1
 
     print('{} - INFO - Total: {} jobs'.format(datetime.datetime.now().strftime("%Y%m%d %H:%M:%S"), str(jobs_count)))
 
@@ -127,26 +128,26 @@ def export_all_jenkins_jobs_builds(jenkins_site, jenkins_protocol, jenkins_domai
     for job in jobs_list:
         jobs_builds_count = 0
 
-        jobs_builds_response = requests.get(
+        http_response = requests.get(
             '{}://{}/job/{}/api/json?tree=allBuilds[*]&pretty=true'.format(jenkins_protocol, jenkins_domain_name, job['name']),
             auth=HTTPBasicAuth(jenkins_user, jenkins_token)
-        ).json()
+        )
 
-        for job_build in jobs_builds_response["allBuilds"]:
+        for http_response_item in http_response.json()["allBuilds"]:
 
             jobs_builds_list.append({
                 'date': datetime.datetime.now().strftime("%Y%m%d"),
                 'name': job['name'],
-                'display_name': job_build['displayName'],
-                'description': job_build['description'],
-                'duration': job_build['duration'],
-                'estimated_duration': job_build['estimatedDuration'],
-                'full_display_name': job_build['fullDisplayName'],
-                'id': job_build['id'],
-                'number': job_build['number'],
-                'result': job_build['result'],
-                # 'in_progress': job_build['inProgress'],
-                'timestamp': job_build['timestamp']
+                'display_name': http_response_item.get('displayName'),
+                'description': http_response_item.get('description'),
+                'duration': http_response_item.get('duration'),
+                'estimated_duration': http_response_item.get('estimatedDuration'),
+                'full_display_name': http_response_item.get('fullDisplayName'),
+                'id': http_response_item.get('id'),
+                'number': http_response_item.get('number'),
+                'result': http_response_item.get('result'),
+                # 'in_progress': http_response_item['inProgress'],
+                'timestamp': http_response_item.get('timestamp')
             })
             jobs_builds_count = jobs_builds_count + 1
 
